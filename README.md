@@ -8,7 +8,7 @@ If you are interested in support for other architectures check out [Proviso](htt
 
 ## Installation
 
-Kalastack 3 requires at least [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5) and [VirtualBox 4.2.18](http://download.virtualbox.org/virtualbox/4.2.18/) to be run correctly. Before you begin please download both. If you are upgrading to Vagrant 1.5 you may need to go through the Vagrant update process.
+Kalastack 3 has been tested stable on [Vagrant 1.7.3](http://downloads.vagrantup.com/tags/v1.7.3) and [VirtualBox 4.3.26](http://download.virtualbox.org/virtualbox/4.3.26/) to be run correctly. Before you begin please download both. If you are upgrading to Vagrant 1.5 you may need to go through the Vagrant update process.
 
 **System Requirements:**
 - Kalastack works on both 64 and 32 bit architectures and requires at least 2GB of ram.
