@@ -1,6 +1,12 @@
 Kalastack 3!
 =========================
 
+## Deprecated.
+
+Many components of this software have reached end of life and the project is no longer actively maintained
+
+Please check out the successor project [Kalabox2](https://github.com/kalabox/kalabox). This project is still under development but it very actively supported and should reach feature parity with Kalabox 1 shortly. 
+
 Kalastack is a basic LEMP stack built for Drupal. At its core it is a series of puppet manifests that
 are managed by Vagrant. Kalastack was built to run primarily on Ubuntu Server 12.04, though it will welcome multiple architectures in the future.
 
@@ -14,6 +20,8 @@ Kalastack 3 has been tested stable on [Vagrant 1.7.3](http://downloads.vagrantup
 - Kalastack works on both 64 and 32 bit architectures and requires at least 2GB of ram.
 
 *Notes:* At this time, Kalastack is actively tested on Mac OSX 10.9 and with Vagrant 1.6.3 and VirtualBox 4.3.12. It has also been used on Ubuntu 12.04 both natively and using VirtualBox and Vagrant. You may have to play around with the VT Intel settings on your machine to get it to work. That all said it is not a recommended or supported environment at this time.
+
+*More Notes: On Ubuntu 12.04 with a Kernel of 3.9.0-x or greater, you may have issues with the 4.2.18 VBnot working properly.  This is resolved by using the a version of 4.3.x.
 
 Once you have downloaded and installed both Vagrant and VirtualBox,
 you can build out the complete stack:
@@ -117,7 +125,12 @@ Many browsers also offer automated tools/plugins to turn profiling on and off, i
 ### APACHE SOLR
 
 Currently, Kalastack doesn't come with Solr installed by default. You can, however,
-easily add it in by following the instructions on the [Adding Solr wiki page](https://github.com/kalamuna/kalastack/wiki/Adding-Solr-to-Kalastack).
+easily add it in by following the instructions on the [Adding Solr wiki page](https://github.com/kalamuna/kalastack/wiki/Configuration-Adding-Solr).
+
+### FRONTEND TOOLING
+
+Currently, Kalastack doesn't come with front end tooling like `grunt`, `bower`, `sass`, `compass` and `yo` installed by default.
+You can, however, easily add it in by following the instructions on the [Adding front end tooling](https://github.com/kalamuna/kalastack/wiki/Configuration-Adding-Front-End-Tooling).
 
 
 -------------------------------------------------------------------------------------
