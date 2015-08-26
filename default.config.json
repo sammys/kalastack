@@ -8,7 +8,7 @@
   "memory_divisor": "4",
   "box_location": {
     "32": "http://files.kalamuna.com/kalabox32.box",
-    "64": "http://files.kalamuna.com/kalabox64.box"
+    "64": "~/kalastack/kalabox64.box"
   },
   "ip": "1.3.3.7",
   "host_ip": "1.3.3.1",
@@ -22,12 +22,29 @@
     "info.kala",
     "images.kala"
   ],
-  "synced_www_folder": {
-    "host_path": "/kalabox/www/",
-    "guest_path": "/var/www/",
-    "nfs": "true",
-    "nfs_version": "3",
-    "create": "true"
+  "synced_folders": {
+    "synced_www_folder": {
+      "host_path": "/kalabox/www/",
+      "guest_path": "/var/www/",
+      "nfs": "true",
+      "nfs_version": "3",
+      "create": "true",
+      "home_relative": "true"
+    },
+    "synced_profiling_folder": {
+      "host_path": "/kalabox/profiling/",
+      "guest_path": "/var/profiling/",
+      "nfs": "true",
+      "nfs_version": "3",
+      "create": "true",
+      "home_relative": "true"
+    }
+  },
+  "port_forwarding": {
+    "mysql": {
+      "guest": 3306,
+      "host": 53306
+    }
   },
   "ssh_forwarding": "false",
   "puppet_master": {

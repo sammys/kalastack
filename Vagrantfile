@@ -54,8 +54,8 @@ Vagrant.configure("2") do |config|
   # This should translate to a 3GB MAXBOX
   if hostmem > 12288 then
     hostmem = 12288
-  elsif hostmem < 4096 then
-    puts "WARNING: Kalabox is designed to work best with at least 4096MB of RAM! You have #{ hostmem }MB."
+  elsif hostmem < 4000 then
+    puts "WARNING: Kalabox is designed to work best with at least 4GB of RAM! You have #{ hostmem }MB."
   end
 
   # The url from where the 'config.vm.box' box will be fetched if it
@@ -70,18 +70,59 @@ Vagrant.configure("2") do |config|
   # using a specific IP.
   config.vm.network :private_network, ip: conf["ip"]
   config.hostsupdater.aliases = conf["host_entries"]
+  Dir.glob(Dir.home + conf["synced_folders"]["synced_www_folder"]["host_path"] + "/*").select {|f| File.directory? f}.each {|f| conf["host_entries"] << (File.basename(f) << ".kala")}
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+
+  #############################################################################
+  # Make sure your box is not running when you make changes to this config!!!!!
+  # Copy these to config.json. Do not uncomment these lines!
+  #############################################################################
+  # Show menu at start up to select host adapter to bridge to.
+  # (or comment this out and uncomment one below)
+  # config.vm.network "public_network"
+
+  # Select Mac ethernet adapter to bridge to automatically
+  # config.vm.network :public_network, bridge: 'en0: Ethernet'
+
+  # Select Mac AirPort adapter to bridge to automatically (IPv4 only!)
+  # config.vm.network :public_network, bridge: 'en1: Wi-Fi (AirPort)'
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder Dir.home + conf["synced_www_folder"]["host_path"], conf["synced_www_folder"]["guest_path"], :create => conf["synced_www_folder"]["create"], :nfs => conf["synced_www_folder"]["nfs"], :nfs_version => conf["synced_www_folder"]["nfs_version"], :mount_options => ['nolock']
+  conf["synced_folders"].each do |key, s|
+    if s["home_relative"] == "true"
+      path = Dir.home + s["host_path"]
+    else
+      path = s["host_path"]
+    end
+    config.vm.synced_folder path, s["guest_path"], :create => s["create"], :nfs => s["nfs"], :nfs_version => s["nfs_version"], :mount_options => ['nolock']
+  end
+  #config.vm.synced_folder Dir.home + conf["synced_www_folder"]["host_path"], conf["synced_www_folder"]["guest_path"], :create => conf["synced_www_folder"]["create"], :nfs => conf["synced_www_folder"]["nfs"], :nfs_version => conf["synced_www_folder"]["nfs_version"], :mount_options => ['nolock']
 
   # Use for drush debugging. Be careful with this!!! It could bork your box.
   # config.vm.synced_folder "~/kalabox/drush/", "/usr/share/drush/", :create => true, :nfs => true
+  config.vm.synced_folder "~/kalabox/home.drush", "/home/vagrant/.drush", :create => true, :nfs => true
+
+  # Used for profiler output
+  #config.vm.synced_folder Dir.home + conf["synced_profiling_folder"]["host_path"], conf["synced_profiling_folder"]["guest_path"], :create => conf["synced_profiling_folder"]["create"], :nfs => conf["synced_profiling_folder"]["nfs"], :nfs_version => conf["synced_profiling_folder"]["nfs_version"], :mount_options => ['nolock']
 
   # Set some SSH config
   config.ssh.forward_agent = conf["ssh_forwarding"]
+
+  # Port forwarding
+  config.vm.network :forwarded_port,
+    guest: 22,
+    host: 5222,
+    id: "ssh",
+    auto_correct: true
+  conf["port_forwarding"].each do |name, ports|
+    config.vm.network "forwarded_port", guest: ports["guest"], host: ports["host"]
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -106,6 +147,21 @@ Vagrant.configure("2") do |config|
       ps.puppet_server = conf["puppet_master"]["server"]
       ps.options = "--verbose --debug --test --environment " + conf["puppet_environment"]
       ps.facter = {
+        "vagrant" => "1",
+        "kalauser" => conf["boxuser"],
+        "kalahost" => conf["host_ip"],
+        "kalaversion" => conf["kalastack_version"],
+        "kalamem" => (hostmem / conf["memory_divisor"].to_i),
+        "terminatur_version" => conf["terminatur_version"],
+      }
+    end
+  elsif ENV['KALABOX_LOCAL']=='TRUE' then
+    config.vm.provision :puppet do |p|
+      p.manifests_path = "manifests"
+      p.manifest_file  = "site.pp"
+      p.module_path = "modules"
+      p.options = "--verbose --debug"
+      p.facter = {
         "vagrant" => "1",
         "kalauser" => conf["boxuser"],
         "kalahost" => conf["host_ip"],
