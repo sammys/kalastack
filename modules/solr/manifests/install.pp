@@ -3,12 +3,14 @@
  * Installs solr and tomcat
  * 
  */
+
 class solr::install {
   package { "solr-tomcat":
-    ensure  => present,
+    ensure  => installed,
     require => [
     	Class["phpfpm"],
     	Class["nginx"],
+        Apt::Ppa['ppa:webops/solr-3.6']
     ]
   }
 }

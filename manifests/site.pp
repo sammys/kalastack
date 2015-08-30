@@ -8,7 +8,13 @@
 node /^kala\.[a-f0-9]{32}\.box$/  {
   # Initialize core packages
   include kalabox
+
   include apt
+  apt::ppa { 'ppa:webops/solr-3.6':}
+#  class { 'apt':
+#    always_apt_update => true,
+#  }
+
   include git
   include grub
   include unzip
