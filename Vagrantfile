@@ -140,6 +140,10 @@ Vagrant.configure("2") do |config|
   # View the documentation for the provider you're using for more
   # information on available options.
 
+  # Ensure the box has puppet >=3.0
+  # Needed for puppetlabs apt module
+  config.vm.provision :shell, :path => "scripts/upgrade_puppet.sh"
+
   # Use the correct provisioner based on some environmental settings
   if ENV['KALABOX_LEGACY']=='TRUE' then
     config.vm.provision :puppet_server do |ps|
@@ -222,6 +226,7 @@ Vagrant.configure("2") do |config|
       "vagrant" => "1",
       "kalauser" => conf["boxuser"],
       "kalahost" => conf["host_ip"],
+      "kalaversion" => conf["kalastack_version"],
       "kalamem" => (hostmem / conf["memory_divisor"].to_i),
       "terminatur_version" => conf["terminatur_version"],
     }

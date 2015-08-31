@@ -6,11 +6,11 @@
 
 class solr::install {
   package { "solr-tomcat":
-    ensure  => installed,
+    ensure  => latest,
     require => [
     	Class["phpfpm"],
     	Class["nginx"],
-        Apt::Ppa['ppa:webops/solr-3.6']
+        Apt::Ppa["ppa:lucene-ubuntu/dev"]
     ]
   }
 }

@@ -6,14 +6,16 @@
  */
 
 node /^kala\.[a-f0-9]{32}\.box$/  {
+  include apt
+
+  Exec["apt_update"] -> Package <| |>
+
+  apt::ppa { 'ppa:lucene-ubuntu/dev': 
+    notify => Exec["apt_update"]
+  }
+
   # Initialize core packages
   include kalabox
-
-  include apt
-  apt::ppa { 'ppa:webops/solr-3.6':}
-#  class { 'apt':
-#    always_apt_update => true,
-#  }
 
   include git
   include grub
