@@ -1,0 +1,46 @@
+#!/bin/bash
+
+SITENAMELC=shopmapp
+IMAGEPATH=~/Shopmapp/drives
+MOUNTPOINT=~/Shopmapp/www
+VAGRANT_ROOT=~/kalastack
+UPCOMMAND='vagrant up'
+DO_IT=1
+DIMAGE=0
+
+if [ ! -d $VAGRANT_ROOT ] || [ ! -r $VAGRANT_ROOT/Vagrantfile ]; then
+  echo "Could not find a Vagrantfile at: $VAGRANT_ROOT"
+else
+  # Get the sudo activated before we start so the user can go get coffee
+  sudo date >/dev/null
+
+  if [ $DIMAGE -eq 1 ]; then
+    IMAGEFILE="$IMAGEPATH/$SITENAMELC.sparsebundle"
+
+    if [ ! -d "$IMAGEPATH" ]; then
+      mkdir "$IMAGEPATH"
+    fi
+
+    if [ ! -r "$IMAGEFILE" ]; then
+      hdiutil create -size 3g "$IMAGEFILE" -volname $SITENAMELC -type SPARSEBUNDLE -encryption AES-256 -fs HFS+J
+    fi
+
+    if [ ! -d "$MOUNTPOINT" ]; then
+      mkdir -p "$MOUNTPOINT"
+    fi
+
+    if [ ! -d "$IMAGEFILE" ]; then
+      echo "An encrypted image file could not be located. Aborting!"
+      export DO_IT=0
+    fi
+  fi
+
+  if [ $DO_IT -eq 1 ]; then
+    if [ $DIMAGE -eq 1 ]; then
+      hdiutil attach "$IMAGEFILE" -mountpoint "$MOUNTPOINT"
+    fi
+    cd $VAGRANT_ROOT
+    $UPCOMMAND
+  fi
+  unset DO_IT
+fi
