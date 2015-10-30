@@ -3,5 +3,5 @@
 VAGRANT_ROOT=~/kalastack
 DIR=`pwd`
 cd $VAGRANT_ROOT
-sudo date >/dev/null && vagrant halt
+sudo -n date >/dev/null 2>&1 || echo -n "Sudo " && sudo date >/dev/null 2>&1
 cd "$DIR"
