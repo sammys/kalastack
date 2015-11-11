@@ -12,7 +12,7 @@ if [ ! -d $VAGRANT_ROOT ] || [ ! -r $VAGRANT_ROOT/Vagrantfile ]; then
   echo "Could not find a Vagrantfile at: $VAGRANT_ROOT"
 else
   # Get the sudo activated before we start so the user can go get coffee
-  sudo -n date >/dev/null 2>&1 || echo -n "Sudo " && sudo date >/dev/null 2>&1
+  sudo -n date >/dev/null 2>&1 || echo -n "(sudo) " && sudo date >/dev/null 2>&1
 
   if [ $DIMAGE -eq 1 ]; then
     IMAGEFILE="$IMAGEPATH/$SITENAMELC.sparsebundle"
