@@ -10,6 +10,11 @@ node /^kala\.[a-f0-9]{32}\.box$/  {
 
   Exec["apt_update"] -> Package <| |>
 
+  package { 'python-software-properties':
+    ensure  => installed,
+    require  => Exec['apt-get update'],
+  }
+
   apt::ppa { 'ppa:lucene-ubuntu/dev': 
     notify => Exec["apt_update"]
   }
