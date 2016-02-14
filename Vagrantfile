@@ -136,13 +136,17 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--memory", (hostmem / conf["memory_divisor"].to_i)]
     vb.name = File.read(".kalabox/uuid")
   end
+
   #
   # View the documentation for the provider you're using for more
   # information on available options.
 
+  # Ensure /sbin/vboxadd is in place
+  config.vm.provision "Ensure vboxadd exists", type: "shell", run: "always", path: "scripts/ensure_vboxadd.sh"
+
   # Ensure the box has puppet >=3.0
   # Needed for puppetlabs apt module
-  config.vm.provision :shell, :path => "scripts/upgrade_puppet.sh"
+  config.vm.provision "shell", path: "scripts/upgrade_puppet.sh"
 
   # Use the correct provisioner based on some environmental settings
   if ENV['KALABOX_LEGACY']=='TRUE' then

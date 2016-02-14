@@ -12,7 +12,7 @@ node /^kala\.[a-f0-9]{32}\.box$/  {
 
   package { 'python-software-properties':
     ensure  => installed,
-    require  => Exec['apt-get update'],
+    require  => Exec['apt_update'],
   }
 
   apt::ppa { 'ppa:lucene-ubuntu/dev': 
